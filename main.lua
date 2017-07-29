@@ -1,9 +1,16 @@
 local Gamestate = require 'lib.hump.gamestate'
 local Title = require 'src.title'
+local Play = require 'src.play'
+local Package = require 'src.package'
+local Vector = require 'lib.hump.vector'
 
 function love.load()
     Gamestate.registerEvents()
-    Gamestate.switch(Title)
+    Gamestate.switch(Play, Package({
+        { 0, 0, 1, 0 },
+        { 1, 1, 1, 1 },
+        { 1, 1, 1, 0 }
+    }, { T = 1, J = 1 }, Vector(50, 50)))
 end
 
 function love.draw()
