@@ -32,7 +32,7 @@ end
 
 function Play:update(dt)
     if self.held then
-        self.held.position = Vector(love.mouse.getX() / 4, love.mouse.getY() / 4)
+        self.held.position = Vector(love.mouse.getX() / SCALE, love.mouse.getY() / SCALE)
     end
 end
 
@@ -41,32 +41,39 @@ function Play:draw()
 end
 
 function Play:keypressed(key, scancode, isRepeat)
-    if self.held and key == 'r' then
-        self.held:rotate()
-    end
 end
 
 function Play:keyreleased(key, scancode, isRepeat)
 end
 
 function Play:mousepressed(x, y, button, isTouch)
-    x = x / 4
-    y = y / 4
-    print('pressed')
-    if button == 1 and not self.held then
-        for _,t in pairs(self.tetrominos) do
-            local box = t:bbox()
-            print(box.l, box.t, box.r, box.b)
-            print(x, y)
+    if button == 1 then
+        if not self.held then
+            x = x / SCALE
+            y = y / SCALE
 
-            if box.l <= x and x <= box.r and
-               box.t <= y and y <= box.b then
-                self.held = t
-                return
+            for _,t in pairs(self.tetrominos) do
+                local box = t:bbox()
+
+                if box.l <= x and x <= box.r and
+                box.t <= y and y <= box.b then
+                    self.held = t
+                    love.mouse.setVisible(false)
+                    return
+                end
             end
+        else
+            self.held.position.x = math.floor(self.held.position.x / CELL_SIZE) * CELL_SIZE
+            self.held.position.y = math.floor(self.held.position.y / CELL_SIZE) * CELL_SIZE
+
+            self.held = nil
+            love.mouse.setVisible(true)
+            return
         end
-    elseif button == 2 and self.held then
-        self.held = nil
+    end
+
+    if self.held and button == 2 then
+        self.held:rotate()
     end
 end
 

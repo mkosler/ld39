@@ -132,8 +132,6 @@ local PIECES = {
     }
 }
 
-local CELL_SIZE = 4
-
 function Tetromino:init(piece, position)
     self.piece = piece
     self.position = position or Vector(0, 0)

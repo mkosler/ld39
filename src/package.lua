@@ -3,8 +3,6 @@ local Vector = require 'lib.hump.vector'
 
 local Package = Class{}
 
-local CELL_SIZE = 4
-
 -- invoice
 -- super jump: 2
 -- spread shot: 1
