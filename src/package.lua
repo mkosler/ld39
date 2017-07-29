@@ -4,10 +4,14 @@ local Vector = require 'lib.hump.vector'
 local Package = Class{}
 
 -- invoice
--- super jump: 2
--- spread shot: 1
+-- j: 2
+-- s: 1
+
+local image = nil
 
 function Package:init(layout, invoice, position)
+    if not image then image = love.graphics.newImage('assets/box.png') end
+
     self.layout = layout
     self.invoice = invoice
     self.position = position or Vector(0, 0)
@@ -31,6 +35,25 @@ function Package:bbox()
         r = self.position.x + (#self.layout[1] * CELL_SIZE),
         b = self.position.y + (#self.layout * CELL_SIZE)
     }
+end
+
+function Package:isComplete()
+    local count = {}
+
+    for _,v in pairs(self.grid) do
+        for _,cell in pairs(v) do
+            if cell.piece then
+                if not count[cell.piece] then count[cell.piece] = 0 end
+                count[cell.piece] = count[cell.piece] + 1
+            end
+        end
+    end
+
+    for name,n in pairs(self.invoice) do
+        if count[name] ~= n * 4 then return false end
+    end
+    
+    return true
 end
 
 function Package:apply(tetromino, unapply)
@@ -77,11 +100,12 @@ end
 
 local function debugDraw(self)
     love.graphics.setColor(0, 255, 0, 150)
-    local b = self:bbox()
-    love.graphics.rectangle('line', b.l, b.t, b.r - b.l, b.b - b.t)
 
     love.graphics.push()
-    love.graphics.translate(self.position.x, self.position.y)
+    local b = self:bbox()
+    love.graphics.translate(-self.position.x, -self.position.y)
+    love.graphics.rectangle('line', b.l, b.t, b.r - b.l, b.b - b.t)
+    love.graphics.pop()
 
     for y,v in ipairs(self.layout) do
         for x,cell in ipairs(v) do
@@ -101,11 +125,42 @@ local function debugDraw(self)
         end
     end
     
-    love.graphics.pop()
+    if self:isComplete() then
+        love.graphics.setColor(0, 255, 0)
+        love.graphics.circle('fill', -CELL_SIZE, -CELL_SIZE, CELL_SIZE / 2)
+    end
 end
 
 function Package:draw()
-    debugDraw(self)
+    love.graphics.push('all')
+    love.graphics.translate(self.position:unpack())
+    love.graphics.draw(image)
+
+    love.graphics.translate(CELL_SIZE, CELL_SIZE)
+
+    love.graphics.push('all')
+    love.graphics.setColor(255, 255, 255)
+    for y,v in ipairs(self.layout) do
+        for x,cell in ipairs(v) do
+            if cell == 1 then
+                love.graphics.rectangle('fill', ((x - 1) * CELL_SIZE) - 1, ((y - 1) * CELL_SIZE) - 1,
+                    CELL_SIZE + 2, CELL_SIZE + 2)
+            end
+        end
+    end
+
+    love.graphics.setColor(0, 0, 0)
+    for y,v in ipairs(self.layout) do
+        for x,cell in ipairs(v) do
+            if cell == 1 then
+                love.graphics.rectangle('fill', (x - 1) * CELL_SIZE, (y - 1) * CELL_SIZE,
+                    CELL_SIZE, CELL_SIZE)
+            end
+        end
+    end
+    love.graphics.pop()
+
+    love.graphics.pop()
 end
 
 function Package:__tostring()

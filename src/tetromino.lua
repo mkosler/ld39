@@ -140,6 +140,10 @@ local PIECES = {
 }
 
 function Tetromino:init(piece, position)
+    if not PIECES[piece].image then
+        PIECES[piece].image = love.graphics.newImage('assets/'..string.lower(piece)..'.png')
+    end
+
     self.piece = piece
     self.position = position or Vector(0, 0)
     self.rotations = PIECES[piece]
@@ -192,7 +196,21 @@ local function debugDraw(self)
 end
 
 function Tetromino:draw()
-    debugDraw(self)
+    -- debugDraw(self)
+
+    love.graphics.push('all')
+    love.graphics.translate(self.position:unpack())
+    local image = PIECES[self.piece].image
+    if self.rotationIndex == 1 then
+        love.graphics.translate(0, image:getWidth())
+    elseif self.rotationIndex == 2 then
+        love.graphics.translate(image:getWidth(), image:getHeight())
+    elseif self.rotationIndex == 3 then
+        love.graphics.translate(image:getHeight(), 0)
+    end
+    love.graphics.rotate(self.rotationIndex * -math.pi / 2)
+    love.graphics.draw(image)
+    love.graphics.pop()
 end
 
 function Tetromino:__tostring()
