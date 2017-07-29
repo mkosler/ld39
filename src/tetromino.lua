@@ -26,6 +26,7 @@ local Tetromino = Class{}
 local PIECES = {
     I = {
         count = 2,
+        color = { 255, 255, 255 },
         [0] = {
             { 1, 1, 1, 1 }
         },
@@ -38,6 +39,7 @@ local PIECES = {
     },
     T = {
         count = 4,
+        color = { 255, 255, 0 },
         [0] = {
             { 1, 1, 1 },
             { 0, 1, 0 }
@@ -59,6 +61,7 @@ local PIECES = {
     },
     Z = {
         count = 2,
+        color = { 255, 0, 255 },
         [0] = {
             { 1, 1, 0 },
             { 0, 1, 1 }
@@ -71,6 +74,7 @@ local PIECES = {
     },
     S = {
         count = 2,
+        color = { 0, 255, 255 },
         [0] = {
             { 0, 1, 1 },
             { 1, 1, 0 }
@@ -83,6 +87,7 @@ local PIECES = {
     },
     O = {
         count = 1,
+        color = { 255, 0, 0 },
         [0] = {
             { 1, 1 },
             { 1, 1 }
@@ -90,6 +95,7 @@ local PIECES = {
     },
     L = {
         count = 4,
+        color = { 0, 255, 0 },
         [0] = {
             { 1, 1, 1 },
             { 1, 0, 0 }
@@ -111,6 +117,7 @@ local PIECES = {
     },
     J = {
         count = 4,
+        color = { 0, 0, 255 },
         [0] = {
             { 1, 1, 1 },
             { 0, 0, 1 }
@@ -136,6 +143,7 @@ function Tetromino:init(piece, position)
     self.piece = piece
     self.position = position or Vector(0, 0)
     self.rotations = PIECES[piece]
+    self.color = PIECES[piece].color
     self.rotationIndex = 0
 end
 
@@ -143,9 +151,13 @@ function Tetromino:bbox()
     return {
         l = self.position.x,
         t = self.position.y,
-        r = self.position.x + (#self.rotations[self.rotationIndex][1] * CELL_SIZE),
-        b = self.position.y + (#self.rotations[self.rotationIndex] * CELL_SIZE)
+        r = self.position.x + (#self:currentRotation()[1] * CELL_SIZE),
+        b = self.position.y + (#self:currentRotation() * CELL_SIZE)
     }
+end
+
+function Tetromino:currentRotation()
+    return self.rotations[self.rotationIndex]
 end
 
 function Tetromino:rotate()
@@ -153,7 +165,7 @@ function Tetromino:rotate()
 end
 
 local function debugDraw(self)
-    local rot = self.rotations[self.rotationIndex]
+    local rot = self:currentRotation()
 
     love.graphics.setColor(0, 255, 0)
     local box = self:bbox()
@@ -162,7 +174,7 @@ local function debugDraw(self)
     love.graphics.push()
     love.graphics.translate(self.position.x, self.position.y)
 
-    love.graphics.setColor(255, 255, 255)
+    love.graphics.setColor(self.color)
 
     for y,v in ipairs(rot) do
         for x,cell in ipairs(v) do

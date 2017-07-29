@@ -59,12 +59,20 @@ function Play:mousepressed(x, y, button, isTouch)
                 box.t <= y and y <= box.b then
                     self.held = t
                     love.mouse.setVisible(false)
+
+                    for _,p in pairs(self.packages) do
+                        p:apply(self.held, true)
+                    end
                     return
                 end
             end
         else
             self.held.position.x = math.floor(self.held.position.x / CELL_SIZE) * CELL_SIZE
             self.held.position.y = math.floor(self.held.position.y / CELL_SIZE) * CELL_SIZE
+
+            for _,p in pairs(self.packages) do
+                p:apply(self.held)
+            end
 
             self.held = nil
             love.mouse.setVisible(true)
