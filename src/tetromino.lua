@@ -132,6 +132,8 @@ local PIECES = {
     }
 }
 
+local CELL_SIZE = 4
+
 function Tetromino:init(piece, position)
     self.position = position or Vector(0, 0)
     self.rotations = PIECES[piece]
@@ -147,16 +149,14 @@ function Tetromino:draw()
 
     local rot = self.rotations[self.rotationIndex]
 
-    -- for y = 1, #rot do
     for y,v in ipairs(rot) do
-        -- for x = 1, #rot[y] do
         for x,cell in ipairs(v) do
             if cell == 1 then
                 love.graphics.rectangle(
                     'fill',
-                    self.position.x + ((x - 1) * 10),
-                    self.position.y + ((y - 1) * 10),
-                    10, 10)
+                    self.position.x + ((x - 1) * CELL_SIZE),
+                    self.position.y + ((y - 1) * CELL_SIZE),
+                    CELL_SIZE, CELL_SIZE)
             end
         end
     end

@@ -6,6 +6,10 @@ function love.load()
     Gamestate.switch(Title)
 end
 
+function love.draw()
+    love.graphics.scale(4, 4)
+end
+
 function love.keypressed(key, scancode, isRepeat)
     if key == 'escape' then
         love.event.quit()
