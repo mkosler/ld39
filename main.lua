@@ -26,16 +26,12 @@ function love.load()
     ASSETS[1] = love.graphics.newImage('assets/1.png')
     ASSETS[2] = love.graphics.newImage('assets/2.png')
     ASSETS[3] = love.graphics.newImage('assets/3.png')
+    ASSETS['box'] = love.graphics.newImage('assets/box.png')
 
     love.graphics.setBackgroundColor(200, 200, 200)
 
     Gamestate.registerEvents()
     Gamestate.switch(Title)
-    -- Gamestate.switch(Play, 1, Package({
-    --     { 0, 0, 1, 0 },
-    --     { 1, 1, 1, 1 },
-    --     { 1, 1, 1, 0 }
-    -- }, { T = 1, J = 1 }, Vector(48, 48)))
 end
 
 function love.draw()
