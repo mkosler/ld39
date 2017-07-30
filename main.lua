@@ -43,6 +43,7 @@ function love.load()
     ASSETS['go-back'] = love.graphics.newImage('assets/goback.png')
     ASSETS['approved'] = love.graphics.newImage('assets/approved.png')
 
+    ASSETS['font4'] = love.graphics.newFont(4 * SCALE)
     ASSETS['font6'] = love.graphics.newFont(6 * SCALE)
     ASSETS['font8'] = love.graphics.newFont(8 * SCALE)
     ASSETS['font12'] = love.graphics.newFont(12 * SCALE)

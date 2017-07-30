@@ -21,7 +21,7 @@ function InvoiceDisplay:init(invoice, x)
     self.paperPosition = Vector(0, 0)
     self.originalPosition = self.paperPosition:clone()
     self.opened = false
-    self.font = ASSETS['font8']
+    self.font = ASSETS['font4']
     self.openedPosition = self.paperPosition - Vector(0, 80 + (8 * #self.invoice))
 
     Signal.register('showInvoice', function ()

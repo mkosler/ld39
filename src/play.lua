@@ -343,8 +343,10 @@ function Play:update(dt)
         self.arrows[1]:update(dt)
     end
 
-    for _,p in pairs(self.packages) do
-        if not p:isComplete() then return end
+    for i,p in pairs(self.packages) do
+        if not p:isComplete() then
+            return
+        end
     end
 
     Signal.emit('complete')
@@ -369,6 +371,13 @@ function Play:draw()
 end
 
 function Play:keypressed(key, scancode, isRepeat)
+    if key == 'p' then
+        for i,p in ipairs(self.packages) do
+            print('package', i)
+            print(tostring(p))
+        end
+    end
+
     if key == 'space' then
         if not showInvoice then
             Signal.emit('showInvoice')

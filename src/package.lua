@@ -130,4 +130,28 @@ function Package:draw()
     love.graphics.pop()
 end
 
+function Package:__tostring()
+    local s = ''
+
+    for y,v in ipairs(self.grid) do
+        for x,cell in ipairs(v) do
+            if self.layout[y][x] == 1 then
+                if #cell.piece > 0 then
+                  s = s..'|'
+                    for _,k in ipairs(cell.piece) do
+                        s = s..k.piece..'|'
+                    end
+                else
+                    s = s..'_'
+                end
+            else
+                s = s..' '
+            end
+        end
+        s = s..'\n'
+    end
+
+    return s
+end
+
 return Package

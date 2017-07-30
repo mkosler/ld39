@@ -11,8 +11,10 @@ function Victory:enter(prev, n, packageCount)
     self.invoicePosition = Vector(0, 134)
 
     Timer.script(function (wait)
-        Timer.tween(0.5, self.prev.camera, { x = 0 }, 'out-quad')
-        wait(0.5)
+        if self.prev.camera.x ~= 0 then
+            Timer.tween(0.5, self.prev.camera, { x = 0 }, 'out-quad')
+            wait(0.5)
+        end
         Timer.tween(0.2, self.invoicePosition, { y = 60 })
         wait(0.2)
         self.showApproved = true

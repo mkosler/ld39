@@ -8,12 +8,24 @@ local Package = require 'src.package'
 local LevelSelect = {}
 
 function LevelSelect:init()
-    self.completedLevels = {}
+    self.completedLevels = {
+        false,
+        false,
+        false,
+        false
+    }
+end
+
+function LevelSelect:isDone()
+    for _,l in pairs(self.completedLevels) do
+        if not l then return false end
+    end
+
+    return true
 end
 
 function LevelSelect:enter(prev, n)
     self.n = n
-    self.totalLevels = 4
     self.levels = {
         {
             packages = {
@@ -21,32 +33,84 @@ function LevelSelect:enter(prev, n)
                     { 0, 0, 1, 0 },
                     { 1, 1, 1, 1 },
                     { 1, 1, 1, 0 }
-                }, { T = 1, J = 1 }, Vector(40, 48)),
+                }, { T = 1, J = 1 }, Vector(40, 48))
+            }
+        },
+        {
+            packages = {
                 Package({
-                    { 0, 0, 1, 0 },
-                    { 1, 1, 1, 1 },
-                    { 1, 1, 1, 0 }
-                }, { T = 1, J = 1 }, Vector(128 + 40, 48))
+                    { 0, 1, 0, 1, 1, 0 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 0, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 }
+                }, { T = 1, Z = 1, L = 1, O = 2, I = 1, J = 2 }, Vector(40, 48))
+            }
+        },
+        {
+            packages = {
+                Package({
+                    { 1, 1, 0, 0, 1 },
+                    { 1, 1, 0, 1, 1 },
+                    { 0, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1 }
+                }, { O = 1, S = 1, L = 1, Z = 1 }, Vector(40, 48)),
+                Package({
+                    { 0, 0, 1, 1, 0 },
+                    { 0, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 0, 1 },
+                    { 1, 1, 1, 1, 1 }
+                }, { T = 2, Z = 1, I = 1, J = 1 }, Vector(40 + 128, 48))
+            }
+        },
+        {
+            packages = {
+                Package({
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                }, { T = 2, S = 1, Z = 1, J = 1, L = 1, O = 1, I = 2 }, Vector(40, 48)),
+                Package({
+                    { 0, 1, 1, 1, 1, 0 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 0, 1, 1, 1, 1, 0 },
+                }, { I = 2, T = 2, Z = 2, L = 1, S = 1 }, Vector(40 + 128, 48)),
+                Package({
+                    { 0, 1, 1, 1, 1, 0 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 1, 1, 0, 0, 1, 1 },
+                    { 1, 1, 0, 0, 1, 1 },
+                    { 1, 1, 1, 1, 1, 1 },
+                    { 0, 1, 1, 1, 1, 0 },
+                }, { I = 2, O = 1, S = 2, Z = 2 }, Vector(40 + 128 + 128, 48))
             }
         }
     }
 
-    if n then
-        self.completedLevels[n] = true
-    end
+    if n then self.completedLevels[n] = true end
+
+    if self:isDone() then Gamestate.switch(GameOver) end
 
     self.buttons = {
         Button(Vector(16, 32), ASSETS['1'], function ()
             Gamestate.switch(Play, 1, unpack(self.levels[1].packages))
         end),
         Button(Vector(80, 32), ASSETS['2'], function ()
-            Gamestate.switch(Play, 2, unpack(self.levels[1].packages))
+            Gamestate.switch(Play, 2, unpack(self.levels[2].packages))
         end),
         Button(Vector(16, 80), ASSETS['3'], function ()
-            Gamestate.switch(Play, 3, unpack(self.levels[1].packages))
+            Gamestate.switch(Play, 3, unpack(self.levels[3].packages))
         end),
         Button(Vector(80, 80), ASSETS['4'], function ()
-            Gamestate.switch(Play, 4, unpack(self.levels[1].packages))
+            Gamestate.switch(Play, 4, unpack(self.levels[4].packages))
         end),
     }
     self.buttons[1].hoverImage = ASSETS['1-hover']
@@ -61,10 +125,6 @@ end
 
 function LevelSelect:update(dt)
     Utils.map(self.buttons, 'update', dt)
-
-    if #self.completedLevels == self.totalLevels then
-        Gamestate.switch(GameOver)
-    end
 end
 
 function LevelSelect:draw()
