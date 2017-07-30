@@ -3,7 +3,6 @@ local Gamestate = require 'lib.hump.gamestate'
 local Victory = {}
 
 function Victory:enter(prev, n)
-    print('entering victory...')
     self.prev = prev
     self.n = n
 end

@@ -52,7 +52,6 @@ function Package:isComplete()
 end
 
 function Package:apply(tetromino, unapply)
-    print('apply')
     local b = self:bbox()
     local tb = tetromino:bbox()
 
@@ -60,7 +59,6 @@ function Package:apply(tetromino, unapply)
             and b.t <= tb.t and tb.t <= b.b
             and b.l <= tb.r and tb.r <= b.r
             and b.t <= tb.b and tb.b <= b.b) then
-        print('outside')
         return
     end
 
@@ -133,7 +131,6 @@ function Package:__tostring()
         for x,cell in ipairs(v) do
             if self.layout[y][x] == 1 then
                 if #cell.piece > 0 then
-                    -- s = s..cell.piece[#cell.piece]
                     s = s..'|'
                     for _,k in ipairs(cell.piece) do
                         s = s..k.piece..'|'

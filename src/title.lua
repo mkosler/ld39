@@ -15,7 +15,7 @@ function Title:update(dt)
 end
 
 function Title:draw()
-    love.graphics.push('all')
+    love.graphics.push()
     love.graphics.origin()
     love.graphics.print('Press any key...')
     love.graphics.pop()

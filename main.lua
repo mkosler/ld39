@@ -1,4 +1,5 @@
 local Gamestate = require 'lib.hump.gamestate'
+local Timer = require 'lib.hump.timer'
 Title = require 'src.title'
 LevelSelect = require 'src.level-select'
 Play = require 'src.play'
@@ -27,11 +28,18 @@ function love.load()
     ASSETS[2] = love.graphics.newImage('assets/2.png')
     ASSETS[3] = love.graphics.newImage('assets/3.png')
     ASSETS['box'] = love.graphics.newImage('assets/box.png')
+    ASSETS['next'] = love.graphics.newImage('assets/next.png')
+    ASSETS['prev'] = love.graphics.newImage('assets/prev.png')
 
     love.graphics.setBackgroundColor(200, 200, 200)
+    love.graphics.setFont(love.graphics.newFont(8 * SCALE))
 
     Gamestate.registerEvents()
     Gamestate.switch(Title)
+end
+
+function love.update(dt)
+    Timer.update(dt)
 end
 
 function love.draw()

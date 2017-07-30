@@ -12,7 +12,6 @@ function LevelSelect:init()
 end
 
 function LevelSelect:enter(prev, n)
-    print('Entering level select...')
     self.n = n
     self.levels = {
         {
@@ -21,7 +20,12 @@ function LevelSelect:enter(prev, n)
                     { 0, 0, 1, 0 },
                     { 1, 1, 1, 1 },
                     { 1, 1, 1, 0 }
-                }, { T = 1, J = 1 }, Vector(48, 48))
+                }, { T = 1, J = 1 }, Vector(40, 48)),
+                Package({
+                    { 0, 0, 1, 0 },
+                    { 1, 1, 1, 1 },
+                    { 1, 1, 1, 0 }
+                }, { T = 1, J = 1 }, Vector(128 + 40, 48))
             }
         }
     }
@@ -31,7 +35,7 @@ function LevelSelect:enter(prev, n)
     end
 
     self.buttons = {
-        Button(Vector(16, 16), ASSETS[1], nil, function ()
+        Button(Vector(16, 16), ASSETS[1], function ()
             Gamestate.switch(Play, 1, unpack(self.levels[1].packages))
         end),
     }
