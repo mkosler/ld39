@@ -1,7 +1,4 @@
-local Tetromino = require 'src.tetromino'
-local Package = require 'src.package'
-local Vector = require 'lib.hump.vector'
-local Utils = require 'src.utils'
+local Gamestate = require 'lib.hump.gamestate'
 
 local Title = {}
 
@@ -18,12 +15,14 @@ function Title:update(dt)
 end
 
 function Title:draw()
-    for _,v in pairs(self.entities) do
-        v:draw()
-    end
+    love.graphics.push('all')
+    love.graphics.origin()
+    love.graphics.print('Press any key...')
+    love.graphics.pop()
 end
 
 function Title:keypressed(key, scancode, isRepeat)
+    Gamestate.switch(LevelSelect)
 end
 
 function Title:keyreleased(key, scancode, isRepeat)

@@ -1,15 +1,20 @@
 local Utils = require 'src.utils'
 local Tetromino = require 'src.tetromino'
 local Vector = require 'lib.hump.vector'
+local Signal = require 'lib.hump.signal'
+local Button = require 'src.button'
+local Gamestate = require 'lib.hump.gamestate'
 
 local Play = {}
 
 function Play:init()
 end
 
-function Play:enter(prev, ...)
+function Play:enter(prev, n, ...)
+    self.n = n
     self.entities = {}
     self.tetrominos = {}
+    self.buttons = {}
     self.packages = { Utils.add(self.entities, ...) }
 
     local y = 0
@@ -17,7 +22,14 @@ function Play:enter(prev, ...)
     for _,p in pairs(self.packages) do
         for name,count in pairs(p.invoice) do
             for x = 0, count - 1 do
-                Utils.add(self.tetrominos, Utils.add(self.entities, Tetromino(name, Vector(x * 16, y * 16))))
+                Utils.add(self.buttons, Utils.add(self.entities, Button(Vector(x * 16, y * 16),
+                    ASSETS[name..'-button'],
+                    ASSETS[name..'-button-hover'],
+                    function ()
+                        if not self.held then
+                            self.held = Utils.add(self.tetrominos, Utils.add(self.entities, Tetromino(name)))
+                        end
+                    end)))
             end
             y = y + 1
         end
@@ -25,22 +37,43 @@ function Play:enter(prev, ...)
     end
 
     self.held = nil
+
+    Signal.register('complete', function ()
+        Gamestate.push(Victory, self.n)
+    end)
 end
 
 function Play:leave()
+    Signal.clear('click')
+    Signal.clear('complete')
 end
 
 function Play:update(dt)
     if self.held then
         self.held.position = Vector(love.mouse.getX() / SCALE, love.mouse.getY() / SCALE)
     end
+
+    Utils.map(self.entities, 'update', dt)
+
+    for _,p in pairs(self.packages) do
+        if not p:isComplete() then return end
+    end
+
+    Signal.emit('complete')
 end
 
 function Play:draw()
+    love.graphics.setColor(255, 255, 255)
     Utils.map(self.entities, 'draw')
 end
 
 function Play:keypressed(key, scancode, isRepeat)
+    if key == 'space' then
+        for i,p in pairs(self.packages) do
+            print('Package '..i)
+            print(tostring(p))
+        end
+    end
 end
 
 function Play:keyreleased(key, scancode, isRepeat)
@@ -66,6 +99,8 @@ function Play:mousepressed(x, y, button, isTouch)
                     return
                 end
             end
+
+            Signal.emit('click', x, y, button)
         else
             self.held.position.x = math.floor(self.held.position.x / CELL_SIZE) * CELL_SIZE
             self.held.position.y = math.floor(self.held.position.y / CELL_SIZE) * CELL_SIZE

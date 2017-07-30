@@ -1,18 +1,39 @@
 local Gamestate = require 'lib.hump.gamestate'
-local Title = require 'src.title'
-local Play = require 'src.play'
-local Package = require 'src.package'
-local Vector = require 'lib.hump.vector'
+Title = require 'src.title'
+LevelSelect = require 'src.level-select'
+Play = require 'src.play'
+Victory = require 'src.victory-screen'
+
+ASSETS = {}
 
 function love.load()
     love.graphics.setDefaultFilter('nearest', 'nearest')
 
+    ASSETS['I-button'] = love.graphics.newImage('assets/i-button.png')
+    ASSETS['J-button'] = love.graphics.newImage('assets/j-button.png')
+    ASSETS['L-button'] = love.graphics.newImage('assets/l-button.png')
+    ASSETS['O-button'] = love.graphics.newImage('assets/o-button.png')
+    ASSETS['S-button'] = love.graphics.newImage('assets/s-button.png')
+    ASSETS['T-button'] = love.graphics.newImage('assets/t-button.png')
+    ASSETS['Z-button'] = love.graphics.newImage('assets/z-button.png')
+    ASSETS['I-button-hover'] = love.graphics.newImage('assets/i-button-hover.png')
+    ASSETS['J-button-hover'] = love.graphics.newImage('assets/j-button-hover.png')
+    ASSETS['L-button-hover'] = love.graphics.newImage('assets/l-button-hover.png')
+    ASSETS['O-button-hover'] = love.graphics.newImage('assets/o-button-hover.png')
+    ASSETS['S-button-hover'] = love.graphics.newImage('assets/s-button-hover.png')
+    ASSETS['T-button-hover'] = love.graphics.newImage('assets/t-button-hover.png')
+    ASSETS['Z-button-hover'] = love.graphics.newImage('assets/z-button-hover.png')
+    ASSETS[1] = love.graphics.newImage('assets/1.png')
+    ASSETS[2] = love.graphics.newImage('assets/2.png')
+    ASSETS[3] = love.graphics.newImage('assets/3.png')
+
     Gamestate.registerEvents()
-    Gamestate.switch(Play, Package({
-        { 0, 0, 1, 0 },
-        { 1, 1, 1, 1 },
-        { 1, 1, 1, 0 }
-    }, { T = 1, J = 1, I = 1, L = 1, O = 1, S = 1, Z = 1 }, Vector(48, 48)))
+    Gamestate.switch(Title)
+    -- Gamestate.switch(Play, 1, Package({
+    --     { 0, 0, 1, 0 },
+    --     { 1, 1, 1, 1 },
+    --     { 1, 1, 1, 0 }
+    -- }, { T = 1, J = 1 }, Vector(48, 48)))
 end
 
 function love.draw()

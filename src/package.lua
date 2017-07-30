@@ -57,6 +57,7 @@ function Package:isComplete()
 end
 
 function Package:apply(tetromino, unapply)
+    print('apply')
     local b = self:bbox()
     local tb = tetromino:bbox()
 
@@ -64,6 +65,7 @@ function Package:apply(tetromino, unapply)
             and b.t <= tb.t and tb.t <= b.b
             and b.l <= tb.r and tb.r <= b.r
             and b.t <= tb.b and tb.b <= b.b) then
+        print('outside')
         return
     end
 
@@ -134,8 +136,8 @@ end
 function Package:draw()
     love.graphics.push('all')
     love.graphics.translate(self.position:unpack())
+    love.graphics.translate(-CELL_SIZE, -CELL_SIZE)
     love.graphics.draw(image)
-
     love.graphics.translate(CELL_SIZE, CELL_SIZE)
 
     love.graphics.push('all')
@@ -164,7 +166,24 @@ function Package:draw()
 end
 
 function Package:__tostring()
-    return 'Package'
+    local s = ''
+
+    for y,v in ipairs(self.grid) do
+        for x,cell in ipairs(v) do
+            if self.layout[y][x] == 1 then
+                if cell.piece then
+                    s = s..cell.piece
+                else
+                    s = s..'_'
+                end
+            else
+                s = s..' '
+            end
+        end
+        s = s..'\n'
+    end
+
+    return s
 end
 
 return Package
