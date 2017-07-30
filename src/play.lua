@@ -211,7 +211,7 @@ function Play:enter(prev, n, ...)
     }
     self.arrows = {
         Button(
-            Vector(104, 50),
+            Vector(114, 60),
             ASSETS['next'],
             function ()
                 Timer.tween(
@@ -255,7 +255,7 @@ function Play:enter(prev, n, ...)
             end
         ),
         Button(
-            Vector(8, 50),
+            Vector(8, 60),
             ASSETS['prev'],
             function ()
                 Timer.tween(
@@ -299,6 +299,13 @@ function Play:enter(prev, n, ...)
             end
         )
     }
+    Utils.add(self.entities, Button(
+        Vector(116, 2),
+        ASSETS['go-back'],
+        function ()
+            Gamestate.switch(LevelSelect)
+        end
+    ))
     self.packages = { ... }
 
     self.held = nil

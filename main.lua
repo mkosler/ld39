@@ -40,6 +40,7 @@ function love.load()
     ASSETS['large-invoice'] = love.graphics.newImage('assets/large-invoice.png')
     ASSETS['folder-front'] = love.graphics.newImage('assets/folder-front.png')
     ASSETS['folder-back'] = love.graphics.newImage('assets/folder-back.png')
+    ASSETS['go-back'] = love.graphics.newImage('assets/goback.png')
 
     ASSETS['font6'] = love.graphics.newFont(6 * SCALE)
     ASSETS['font8'] = love.graphics.newFont(8 * SCALE)
