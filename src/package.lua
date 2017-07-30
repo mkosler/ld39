@@ -26,6 +26,8 @@ function Package:init(layout, invoice, position)
             }
         end
     end
+
+    self.z = 0
 end
 
 function Package:bbox()

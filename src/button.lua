@@ -15,6 +15,8 @@ function Button:init(position, image, hoverImage, onClick)
             self.onClick()
         end
     end)
+
+    self.z = 0
 end
 
 function Button:bbox()

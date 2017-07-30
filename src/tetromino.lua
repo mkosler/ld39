@@ -3,26 +3,6 @@ local Vector = require 'lib.hump.vector'
 
 local Tetromino = Class{}
 
--- ####
-
---  #
--- ###
-
--- ##
---  ##
-
---  ##
--- ##
-
--- ##
--- ##
-
--- #
--- ###
-
---   #
--- ###
-
 local PIECES = {
     I = {
         count = 2,
@@ -149,6 +129,7 @@ function Tetromino:init(piece, position)
     self.rotations = PIECES[piece]
     self.color = PIECES[piece].color
     self.rotationIndex = 0
+    self.z = 0
 end
 
 function Tetromino:bbox()

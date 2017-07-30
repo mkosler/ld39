@@ -27,6 +27,8 @@ function love.load()
     ASSETS[2] = love.graphics.newImage('assets/2.png')
     ASSETS[3] = love.graphics.newImage('assets/3.png')
 
+    love.graphics.setBackgroundColor(200, 200, 200)
+
     Gamestate.registerEvents()
     Gamestate.switch(Title)
     -- Gamestate.switch(Play, 1, Package({

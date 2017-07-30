@@ -7,6 +7,14 @@ local Gamestate = require 'lib.hump.gamestate'
 
 local Play = {}
 
+function Play:setZ(o)
+    self.held.z = self.nextZ
+    self.nextZ = self.nextZ + 1
+    table.sort(self.entities, function (a, b)
+        return a.z < b.z
+    end)
+end
+
 function Play:init()
 end
 
@@ -19,6 +27,9 @@ function Play:enter(prev, n, ...)
 
     local y = 0
 
+    self.held = nil
+    self.nextZ = 1
+
     for _,p in pairs(self.packages) do
         for name,count in pairs(p.invoice) do
             for x = 0, count - 1 do
@@ -28,6 +39,7 @@ function Play:enter(prev, n, ...)
                     function ()
                         if not self.held then
                             self.held = Utils.add(self.tetrominos, Utils.add(self.entities, Tetromino(name)))
+                            self:setZ(self.held)
                         end
                     end)))
             end
@@ -35,8 +47,6 @@ function Play:enter(prev, n, ...)
         end
         y = y + 1
     end
-
-    self.held = nil
 
     Signal.register('complete', function ()
         Gamestate.push(Victory, self.n)
@@ -91,6 +101,7 @@ function Play:mousepressed(x, y, button, isTouch)
                 if box.l <= x and x <= box.r and
                 box.t <= y and y <= box.b then
                     self.held = t
+                    self:setZ(self.held)
                     love.mouse.setVisible(false)
 
                     for _,p in pairs(self.packages) do
