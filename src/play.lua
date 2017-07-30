@@ -21,6 +21,7 @@ end
 
 function Play:enter(prev, n, ...)
     self.n = n
+    self.packageIndex = 1
     self.camera = Vector(0, 0)
     self.entities = {}
     self.tetrominos = {}
@@ -195,91 +196,93 @@ function Play:enter(prev, n, ...)
         )
     }
     self.arrows = {
-        Utils.add(self.entities,
-            Button(
-                Vector(104, 50),
-                ASSETS['next'],
-                function ()
-                    Timer.tween(
-                        1,
-                        self.camera,
-                        { x = self.camera.x + 128 },
-                        'in-out-quad'
+        Button(
+            Vector(104, 50),
+            ASSETS['next'],
+            function ()
+                Timer.tween(
+                    1,
+                    self.camera,
+                    { x = self.camera.x + 128 },
+                    'in-out-quad',
+                    function ()
+                        self.packageIndex = self.packageIndex + 1
+                    end
+                )
+            end,
+            function (o)
+                o.position = o.originalPosition:clone()
+                local moveOut, moveIn
+                moveOut = function ()
+                    o.hoverHandle = Timer.tween(
+                        0.5,
+                        o.position,
+                        { x = o.position.x + 2 },
+                        'out-quad',
+                        moveIn
                     )
-                end,
-                function (o)
-                    o.position = o.originalPosition:clone()
-                    local moveOut, moveIn
-                    moveOut = function ()
-                        o.hoverHandle = Timer.tween(
-                            0.5,
-                            o.position,
-                            { x = o.position.x + 2 },
-                            'out-quad',
-                            moveIn
-                        )
-                    end
-
-                    moveIn = function ()
-                        o.hoverHandle = Timer.tween(
-                            0.5,
-                            o.position,
-                            { x = o.originalPosition.x },
-                            'in-quad',
-                            moveOut
-                        )
-                    end
-
-                    moveOut()
-                end,
-                function (o)
-                    Timer.cancel(o.hoverHandle)
-                    o.hoverHandle = nil
                 end
-            )
+
+                moveIn = function ()
+                    o.hoverHandle = Timer.tween(
+                        0.5,
+                        o.position,
+                        { x = o.originalPosition.x },
+                        'in-quad',
+                        moveOut
+                    )
+                end
+
+                moveOut()
+            end,
+            function (o)
+                Timer.cancel(o.hoverHandle)
+                o.hoverHandle = nil
+            end
         ),
-        Utils.add(self.entities,
-            Button(
-                Vector(8, 50),
-                ASSETS['prev'],
-                function ()
-                    Timer.tween(
-                        1,
-                        self.camera,
-                        { x = self.camera.x - 128 },
-                        'in-out-quad'
+        Button(
+            Vector(8, 50),
+            ASSETS['prev'],
+            function ()
+                Timer.tween(
+                    1,
+                    self.camera,
+                    { x = self.camera.x - 128 },
+                    'in-out-quad',
+                    function ()
+                        self.packageIndex = self.packageIndex - 1
+                    end
+                )
+            end,
+            function (o)
+                o.position = o.originalPosition:clone()
+                local moveOut, moveIn
+                moveOut = function ()
+                    o.hoverHandle = Timer.tween(
+                        0.5,
+                        o.position,
+                        { x = o.position.x - 2 },
+                        'out-quad',
+                        moveIn
                     )
-                end,
-                function (o)
-                    o.position = o.originalPosition:clone()
-                    local moveOut, moveIn
-                    moveOut = function ()
-                        o.hoverHandle = Timer.tween(
-                            0.5,
-                            o.position,
-                            { x = o.position.x - 2 },
-                            'out-quad',
-                            moveIn
-                        )
-                    end
-
-                    moveIn = function ()
-                        o.hoverHandle = Timer.tween(
-                            0.5,
-                            o.position,
-                            { x = o.originalPosition.x },
-                            'in-quad',
-                            moveOut
-                        )
-                    end
-
-                    moveOut()
-                end,
-                function (o)
-                    Timer.cancel(o.hoverHandle)
-                    o.hoverHandle = nil
                 end
-            )
+
+                moveIn = function ()
+                    o.hoverHandle = Timer.tween(
+                        0.5,
+                        o.position,
+                        { x = o.originalPosition.x },
+                        'in-quad',
+                        moveOut
+                    )
+                end
+
+                moveOut()
+            end,
+            function (o)
+                Timer.cancel(o.hoverHandle)
+                o.hoverHandle = nil
+            end
         )
     }
     self.packages = { ... }
@@ -306,6 +309,12 @@ function Play:update(dt)
     Utils.map(self.entities, 'update', dt)
     Utils.map(self.packages, 'update', dt)
     Utils.map(self.tetrominos, 'update', dt)
+    if self.packageIndex ~= 1 then
+        self.arrows[2]:update(dt)
+    end
+    if self.packageIndex ~= #self.packages then
+        self.arrows[1]:update(dt)
+    end
 
     for _,p in pairs(self.packages) do
         if not p:isComplete() then return end
@@ -324,6 +333,12 @@ function Play:draw()
     love.graphics.pop()
 
     Utils.map(self.entities, 'draw')
+    if self.packageIndex ~= 1 then
+        self.arrows[2]:draw()
+    end
+    if self.packageIndex ~= #self.packages then
+        self.arrows[1]:draw()
+    end
 end
 
 function Play:keypressed(key, scancode, isRepeat)
