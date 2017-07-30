@@ -286,6 +286,7 @@ function Play:enter(prev, n, ...)
 
     self.held = nil
     self.nextZ = 1
+    self.showInvoice = false
 
     Signal.register('complete', function ()
         Gamestate.push(Victory, self.n)
@@ -327,9 +328,12 @@ end
 
 function Play:keypressed(key, scancode, isRepeat)
     if key == 'space' then
-        for i,p in pairs(self.packages) do
-            print('Package '..i)
-            print(tostring(p))
+        if not showInvoice then
+            Signal.emit('showInvoice')
+            showInvoice = true
+        else
+            Signal.emit('hideInvoice')
+            showInvoice = false
         end
     end
 end

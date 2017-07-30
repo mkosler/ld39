@@ -1,13 +1,33 @@
 local Class = require 'lib.hump.class'
 local Vector = require 'lib.hump.vector'
+local Timer = require 'lib.hump.timer'
+local Signal = require 'lib.hump.signal'
 
 local Package = Class{}
+
+local INVOICE_STRINGS = {
+    I = 'Shield',
+    J = 'Super Jump',
+    L = 'Health Up',
+    O = '1-Up',
+    S = 'Dual Lasers',
+    T = 'Rocket Launcher',
+    Z = 'Speed Boost'
+}
+
+local FONT = love.graphics.newFont(16)
 
 function Package:init(layout, invoice, position)
     self.layout = layout
     self.invoice = invoice
     self.position = position or Vector(0, 0)
     self.grid = {}
+    self.invoiceRect = {
+        width = ASSETS['box']:getWidth() - 4,
+        height = 4,
+        originalHeight = 4,
+        opened = false
+    }
 
     for y,v in ipairs(layout) do
         self.grid[y] = {}
@@ -20,6 +40,19 @@ function Package:init(layout, invoice, position)
     end
 
     self.z = 0
+
+    Signal.register('showInvoice', function ()
+        self.invoiceRect.height = self.invoiceRect.originalHeight
+        if self.handle then Timer.cancel(self.handle) end
+        self.handle = Timer.tween(0.75, self.invoiceRect, { height = 60 }, 'linear', function ()
+            self.invoiceRect.opened = true
+        end)
+    end)
+    Signal.register('hideInvoice', function ()
+        Timer.cancel(self.handle)
+        self.invoiceRect.opened = false
+        self.handle = Timer.tween(0.25, self.invoiceRect, { height = self.invoiceRect.originalHeight })
+    end)
 end
 
 function Package:bbox()
@@ -92,6 +125,16 @@ function Package:apply(tetromino, unapply)
     end
 end
 
+function Package:invoiceString()
+    local s = ''
+
+    for name,n in pairs(self.invoice) do
+        s = s..string.format('%s: %d\n', INVOICE_STRINGS[name], n)
+    end
+
+    return s
+end
+
 function Package:draw()
     love.graphics.push('all')
     love.graphics.translate(self.position:unpack())
@@ -120,6 +163,25 @@ function Package:draw()
         end
     end
     love.graphics.pop()
+
+    love.graphics.push()
+    love.graphics.translate(0, 56)
+    love.graphics.setColor(220, 220, 220)
+    love.graphics.rectangle('fill', 0, 0, self.invoiceRect.width, -self.invoiceRect.height)
+    love.graphics.setColor(0, 0, 0)
+    love.graphics.rectangle('line', 0, 0, self.invoiceRect.width, -self.invoiceRect.height)
+    love.graphics.pop()
+    if self.invoiceRect.opened then
+        love.graphics.push()
+        love.graphics.translate(4, 4)
+        love.graphics.scale(1 / SCALE, 1 / SCALE)
+        love.graphics.setColor(0, 0, 0)
+        local oldFont = love.graphics.getFont()
+        love.graphics.setFont(FONT)
+        love.graphics.print(self:invoiceString())
+        love.graphics.setFont(oldFont)
+        love.graphics.pop()
+    end
 
     love.graphics.pop()
 end
