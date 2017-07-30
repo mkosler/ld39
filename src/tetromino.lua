@@ -141,6 +141,33 @@ function Tetromino:bbox()
     }
 end
 
+function Tetromino:isOver(mx, my)
+    local box = self:bbox()
+
+    if not (box.l <= mx and mx <= box.r and box.t <= my and my <= box.b) then
+        return false
+    end
+
+    for y,v in ipairs(self:currentRotation()) do
+        for x,cell in ipairs(v) do
+            if cell == 1 then
+                local b = {
+                    l = box.l + ((x - 1) * CELL_SIZE),
+                    t = box.t + ((y - 1) * CELL_SIZE),
+                    r = box.l + (x * CELL_SIZE),
+                    b = box.t + (y * CELL_SIZE)
+                }
+
+                if b.l <= mx and mx <= b.r and b.t <= my and my <= b.b then
+                    return true
+                end
+            end
+        end
+    end
+
+    return false
+end
+
 function Tetromino:currentRotation()
     return self.rotations[self.rotationIndex]
 end

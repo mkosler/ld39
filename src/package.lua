@@ -21,7 +21,7 @@ function Package:init(layout, invoice, position)
         self.grid[y] = {}
         for x,cell in ipairs(v) do
             self.grid[y][x] = {
-                piece = nil,
+                piece = {},
                 color = nil
             }
         end
@@ -44,9 +44,9 @@ function Package:isComplete()
 
     for _,v in pairs(self.grid) do
         for _,cell in pairs(v) do
-            if cell.piece then
-                if not count[cell.piece] then count[cell.piece] = 0 end
-                count[cell.piece] = count[cell.piece] + 1
+            if cell.piece[1] then
+                if not count[cell.piece[#cell.piece]] then count[cell.piece[#cell.piece]] = 0 end
+                count[cell.piece[#cell.piece]] = count[cell.piece[#cell.piece]] + 1
             end
         end
     end
@@ -87,53 +87,57 @@ function Package:apply(tetromino, unapply)
                 shifted = shifted / CELL_SIZE
                 shifted = shifted + Vector(1, 1)
 
-                local o = {}
-
-                if not unapply then
-                    o = {
-                        piece = tetromino.piece,
-                        color = tetromino.color
-                    }
+                if unapply then
+                    table.remove(self.grid[shifted.y][shifted.x].piece)
+                else
+                    table.insert(self.grid[shifted.y][shifted.x].piece, tetromino.piece)
                 end
 
-                self.grid[shifted.y][shifted.x] = o
+                -- if not unapply then
+                --     o = {
+                --         piece = tetromino.piece,
+                --         color = tetromino.color
+                --     }
+                -- end
+
+                -- self.grid[shifted.y][shifted.x]
             end
         end
     end
 end
 
-local function debugDraw(self)
-    love.graphics.setColor(0, 255, 0, 150)
+-- local function debugDraw(self)
+--     love.graphics.setColor(0, 255, 0, 150)
 
-    love.graphics.push()
-    local b = self:bbox()
-    love.graphics.translate(-self.position.x, -self.position.y)
-    love.graphics.rectangle('line', b.l, b.t, b.r - b.l, b.b - b.t)
-    love.graphics.pop()
+--     love.graphics.push()
+--     local b = self:bbox()
+--     love.graphics.translate(-self.position.x, -self.position.y)
+--     love.graphics.rectangle('line', b.l, b.t, b.r - b.l, b.b - b.t)
+--     love.graphics.pop()
 
-    for y,v in ipairs(self.layout) do
-        for x,cell in ipairs(v) do
-            if cell == 1 then
-                love.graphics.setColor(255, 0, 0, 150)
+--     for y,v in ipairs(self.layout) do
+--         for x,cell in ipairs(v) do
+--             if cell == 1 then
+--                 love.graphics.setColor(255, 0, 0, 150)
 
-                if self.grid[y][x].piece then
-                    local color = self.grid[y][x].color
-                    love.graphics.setColor(color[1], color[2], color[3], 150)
-                end
+--                 if self.grid[y][x].piece then
+--                     local color = self.grid[y][x].color
+--                     love.graphics.setColor(color[1], color[2], color[3], 150)
+--                 end
 
-                love.graphics.rectangle('line',
-                    (x - 1) * CELL_SIZE,
-                    (y - 1) * CELL_SIZE,
-                    CELL_SIZE, CELL_SIZE)
-            end
-        end
-    end
+--                 love.graphics.rectangle('line',
+--                     (x - 1) * CELL_SIZE,
+--                     (y - 1) * CELL_SIZE,
+--                     CELL_SIZE, CELL_SIZE)
+--             end
+--         end
+--     end
     
-    if self:isComplete() then
-        love.graphics.setColor(0, 255, 0)
-        love.graphics.circle('fill', -CELL_SIZE, -CELL_SIZE, CELL_SIZE / 2)
-    end
-end
+--     if self:isComplete() then
+--         love.graphics.setColor(0, 255, 0)
+--         love.graphics.circle('fill', -CELL_SIZE, -CELL_SIZE, CELL_SIZE / 2)
+--     end
+-- end
 
 function Package:draw()
     love.graphics.push('all')
@@ -173,8 +177,8 @@ function Package:__tostring()
     for y,v in ipairs(self.grid) do
         for x,cell in ipairs(v) do
             if self.layout[y][x] == 1 then
-                if cell.piece then
-                    s = s..cell.piece
+                if #cell.piece > 0 then
+                    s = s..cell.piece[#cell.piece]
                 else
                     s = s..'_'
                 end

@@ -95,11 +95,12 @@ function Play:mousepressed(x, y, button, isTouch)
             x = x / SCALE
             y = y / SCALE
 
+            table.sort(self.tetrominos, function (a, b)
+                return b.z < a.z
+            end)
             for _,t in pairs(self.tetrominos) do
-                local box = t:bbox()
-
-                if box.l <= x and x <= box.r and
-                box.t <= y and y <= box.b then
+                -- if box.l <= x and x <= box.r and box.t <= y and y <= box.b then
+                if t:isOver(x, y) then
                     self.held = t
                     self:setZ(self.held)
                     love.mouse.setVisible(false)
