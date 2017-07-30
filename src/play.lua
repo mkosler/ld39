@@ -8,6 +8,8 @@ local Timer = require 'lib.hump.timer'
 
 local Play = {}
 
+Play.name = 'Play'
+
 function Play:setZ(o)
     self.held.z = self.nextZ
     self.nextZ = self.nextZ + 1
@@ -313,8 +315,11 @@ function Play:enter(prev, n, ...)
     self.showInvoice = false
 
     Signal.register('complete', function ()
-        ASSETS['finish-audio']:play()
-        Gamestate.push(Victory, self.n)
+        -- Timer.tween(0.2, self.camera, { x = 0 }, 'out-expo', function ()
+        --     Gamestate.push(Victory, self.n, #self.packages)
+        -- end)
+        -- ASSETS['finish-audio']:play()
+        Gamestate.push(Victory, self.n, #self.packages)
     end)
 end
 
