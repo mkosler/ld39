@@ -32,8 +32,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['I-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('I'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -56,8 +58,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['J-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('J'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -80,8 +84,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['L-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('L'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -104,8 +110,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['O-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('O'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -128,8 +136,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['S-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('S'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -152,8 +162,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['T-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('T'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -176,8 +188,10 @@ function Play:enter(prev, n, ...)
                 ASSETS['Z-button'],
                 function ()
                     if not self.held then
+                        ASSETS['open-audio']:play()
                         self.held = Utils.add(self.tetrominos, Tetromino('Z'))
                         self:setZ(self.held)
+                        love.mouse.setVisible(false)
                     end
                 end,
                 function (o)
@@ -292,6 +306,7 @@ function Play:enter(prev, n, ...)
     self.showInvoice = false
 
     Signal.register('complete', function ()
+        ASSETS['finish-audio']:play()
         Gamestate.push(Victory, self.n)
     end)
 end
@@ -345,6 +360,7 @@ function Play:keypressed(key, scancode, isRepeat)
     if key == 'space' then
         if not showInvoice then
             Signal.emit('showInvoice')
+            ASSETS['reveal-audio']:play()
             showInvoice = true
         else
             Signal.emit('hideInvoice')

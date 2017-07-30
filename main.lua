@@ -4,6 +4,7 @@ Title = require 'src.title'
 LevelSelect = require 'src.level-select'
 Play = require 'src.play'
 Victory = require 'src.victory-screen'
+GameOver = require 'src.game-over'
 
 ASSETS = {}
 
@@ -45,6 +46,11 @@ function love.load()
     ASSETS['font12'] = love.graphics.newFont(12 * SCALE)
     ASSETS['font12-bold'] = love.graphics.newFont('assets/Vera-Bold.ttf', 12 * SCALE)
     ASSETS['font14'] = love.graphics.newFont(12 * SCALE)
+
+    ASSETS['open-audio'] = love.audio.newSource('assets/open.wav', 'static')
+    ASSETS['reveal-audio'] = love.audio.newSource('assets/reveal.wav', 'static')
+    ASSETS['finish-audio'] = love.audio.newSource('assets/finish.wav', 'static')
+    ASSETS['game-over-audio'] = love.audio.newSource('assets/gameover.wav', 'static')
 
     love.graphics.setBackgroundColor(0, 148, 255)
 

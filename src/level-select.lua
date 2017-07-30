@@ -13,6 +13,7 @@ end
 
 function LevelSelect:enter(prev, n)
     self.n = n
+    self.totalLevels = 4
     self.levels = {
         {
             packages = {
@@ -60,6 +61,10 @@ end
 
 function LevelSelect:update(dt)
     Utils.map(self.buttons, 'update', dt)
+
+    if #self.completedLevels == self.totalLevels then
+        Gamestate.switch(GameOver)
+    end
 end
 
 function LevelSelect:draw()
