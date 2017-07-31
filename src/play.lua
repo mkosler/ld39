@@ -343,6 +343,35 @@ function Play:update(dt)
         self.arrows[1]:update(dt)
     end
 
+    local isHover = false
+
+    for i,b in pairs(self.buttons) do
+        if b.hover then
+            isHover = true
+            self.hoverText = {
+                position = Vector(love.mouse.getX(), love.mouse.getY() + 20)
+            }
+
+            if i == 1 then
+                self.hoverText.text = 'Shield'
+            elseif i == 2 then
+                self.hoverText.text = 'Super Jump'
+            elseif i == 3 then
+                self.hoverText.text = 'Health Up'
+            elseif i == 4 then
+                self.hoverText.text = '1-Up'
+            elseif i == 5 then
+                self.hoverText.text = 'Dual Lasers'
+            elseif i == 6 then
+                self.hoverText.text = 'Rocket Launcher'
+            elseif i == 7 then
+                self.hoverText.text = 'Speed Boost'
+            end
+        end
+    end
+
+    if not isHover then self.hoverText = nil end
+
     for i,p in pairs(self.packages) do
         if not p:isComplete() then
             return
@@ -373,6 +402,17 @@ function Play:draw()
     end
     if self.packageIndex ~= #self.packages then
         self.arrows[1]:draw()
+    end
+
+    if self.hoverText then
+        love.graphics.push()
+        love.graphics.origin()
+        love.graphics.translate(self.hoverText.position:unpack())
+        love.graphics.setColor(0, 0, 0)
+        love.graphics.setFont(ASSETS['font6'])
+        love.graphics.print(self.hoverText.text)
+        love.graphics.pop()
+        love.graphics.setColor(255, 255, 255)
     end
 end
 
