@@ -125,7 +125,7 @@ function Package:draw()
     end
     love.graphics.pop()
 
-    self.invoiceDisplay:draw()
+    -- self.invoiceDisplay:draw()
 
     love.graphics.pop()
 end

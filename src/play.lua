@@ -359,6 +359,12 @@ function Play:draw()
     love.graphics.translate(-self.camera.x, -self.camera.y)
     Utils.map(self.packages, 'draw')
     Utils.map(self.tetrominos, 'draw')
+    for _,p in pairs(self.packages) do
+        love.graphics.push('all')
+        love.graphics.translate(p.position:unpack())
+        p.invoiceDisplay:draw()
+        love.graphics.pop()
+    end
     love.graphics.pop()
 
     Utils.map(self.entities, 'draw')
